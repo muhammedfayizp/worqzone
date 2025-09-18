@@ -19,7 +19,9 @@ const Register = () => {
     phone: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    role: '',
+    industry: '',
+    proof: new File([], ''),
   })
 
   const [formError,setFormError]=useState <formError> ({
@@ -28,13 +30,21 @@ const Register = () => {
     phone:'',
     role:'',
     password:'',
-    confirmPassword:''
+    confirmPassword:'',
+    industry: '',
+    proof: '',
   })
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement| HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData({...formData,[name]:value.trim()})
-  }
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, files } = e.target as HTMLInputElement;
+  
+    if (name === 'proof' && files && files.length > 0) {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
 
   //real time validation
   const handleRealTimeValidation = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -53,7 +63,6 @@ const Register = () => {
     
     
     const {isValidate,errors} = validateForm(formData,'register')
-    console.log(formData.role);
     
     setFormError(errors)
     setIsLoading(true)
@@ -62,13 +71,15 @@ const Register = () => {
       try {
         if (formData.role==='company') {
           
-          const response:any= await companySignUp(formData)
+          const response= await companySignUp(formData)
+          console.log(response);
           
           if (response.success) {
             toast.success(response.message)
             navigate('/otp', { state: {
               email: formData.email ,
-              role: formData.role
+              role: formData.role,
+              otpType:'register'
             }})
             setIsLoading(false)
           }else {
@@ -172,6 +183,61 @@ const Register = () => {
                   <p className="text-red-500 text-sm mt-1">{formError.role}</p>
                 )}
               </div>
+              { formData.role==="company"&&(
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="w-full md:w-1/2">
+                    <label htmlFor="proof" className="block text-sm text-white/70 mb-1">
+                      Company Verification Proof
+                    </label>
+                    <input
+                      type="file"
+                      id="proof"
+                      name="proof"
+                      accept=".pdf,.jpg,.png"
+                      onChange={handleInputChange}
+                      onBlur={handleRealTimeValidation}
+
+                      className="w-full bg-[#1f1c1d] px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                      required
+                    />
+                    {formError.proof && (
+                      <p className="text-red-500 text-sm mt-1">{formError.proof}</p>
+                    )}
+                  </div>
+              
+                  <div className="w-full md:w-1/2">
+                    <label htmlFor="industry" className="block text-sm text-white/70 mb-1">
+                      Industry
+                    </label>
+                    <input
+                      type="text"
+                      id="industry"
+                      name="industry"
+                      list="industries"
+                      value={formData.industry}
+                      onChange={handleInputChange}
+                      onBlur={handleRealTimeValidation}
+                      placeholder="e.g., IT, Healthcare"
+                      className="w-full bg-[#1f1c1d] px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                      required
+                    />
+                    <datalist id="industries">
+                      <option value="IT" />
+                      <option value="Healthcare" />
+                      <option value="Finance" />
+                      <option value="Education" />
+                      <option value="Retail" />
+                      <option value="Manufacturing" />
+                      <option value="Transportation" />
+                      <option value="Media" />
+                      <option value="Real Estate" />
+                    </datalist>
+                    {formError.industry && (
+                      <p className="text-red-500 text-sm mt-1">{formError.industry}</p>
+                    )}
+                  </div>
+                </div>                
+              )}
 
               <div>
                 <input

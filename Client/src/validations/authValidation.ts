@@ -4,10 +4,10 @@ import type { formError, userSignIn, userSignUp } from '../interface/Interface';
 
 export const validateField = (
   name: string,
-  value: string,
+  value: string|File,
   isLogin: boolean = false
 ): string | undefined => {
-  const trimmedValue = value?.trim() || '';
+  const trimmedValue = typeof value==='string'?value.trim(): '';
 
   switch (name) {
     case "name":
@@ -32,6 +32,14 @@ export const validateField = (
       if (!trimmedValue) return "Role is required";
       break;
 
+    case "proof":
+      if (!isLogin && (!value || (value instanceof File && value.name === ''))) return "Proof is required";
+      break; 
+
+    case "industry":
+      if (!isLogin && !trimmedValue) return "Industry is required";
+      break;  
+
     case "password":
       if (!trimmedValue) return "Password is required";
       if (trimmedValue.length < 8) return "Password must be at least 8 characters";
@@ -55,7 +63,7 @@ export const validateForm = (formData: userSignUp | userSignIn, role: string) =>
 
   const fieldValidation = isLogin
     ? ["email", "password", "role"]
-    : ["name", "email", "phone", "role", "password", "confirmPassword"];
+    : ["name", "email", "phone", "role", "proof", "industry", "password", "confirmPassword"];
 
   fieldValidation.forEach(field => {
 
@@ -66,7 +74,7 @@ export const validateForm = (formData: userSignUp | userSignIn, role: string) =>
   })
 
   if (!isLogin && (formData as userSignUp).password !== (formData as userSignUp).confirmPassword) {
-    errors.confirmPassword = 'password do not match'
+    errors.confirmPassword = 'Passwords do not match';
   }
 
   return {

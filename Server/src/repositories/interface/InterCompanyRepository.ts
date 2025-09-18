@@ -6,4 +6,6 @@ export interface IntercompanyRepository extends InterBaseRepository<InterCompany
     createCompany(data: Partial<InterCompany>): Promise<InterCompany | null>;
     findCompanyByEmail(email:string):Promise <InterCompany|null>;
     verifyCompany(email:string ,isVerified:boolean):Promise <InterCompany|null>
+    findCompanyById(id:string):Promise<InterCompany|null>
+    updateCompanyById(companyId:string,companyData:Partial<InterCompany>):Promise<InterCompany|null>
 }

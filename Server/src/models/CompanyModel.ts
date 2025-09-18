@@ -7,7 +7,10 @@ export interface InterCompany extends Document{
     password:string,
     isBlocked:boolean,
     isVerified:boolean,
-    phone:string
+    phone:string,
+    proofUrl:string,
+    industry:string,
+    profileImage?:string,
 }
 
 const companySchema:Schema= new Schema({
@@ -33,7 +36,19 @@ const companySchema:Schema= new Schema({
     isVerified:{
         type:Boolean,
         default:false
+    },
+    proofUrl:{
+        type:String,
+        required:true
+    },
+    industry:{
+        type:String,
+        required:true
+    },
+    profileImage:{
+        type:String,
     }
+
 })
 
 export default mongoose.model<InterCompany>('Company',companySchema)

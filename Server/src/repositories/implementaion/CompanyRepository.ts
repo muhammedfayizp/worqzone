@@ -33,6 +33,20 @@ class CompanyRepository extends BaseRepositories<InterCompany> implements Interc
             throw new Error(error instanceof Error?error.message:String(error))
         }
     }
+    async findCompanyById(id: string): Promise<InterCompany | null> {
+        try {
+            return await this.model.findById(id).exec()
+        } catch (error) {
+            throw new Error(error instanceof Error?error.message:String(error))
+        }
+    }
+    async updateCompanyById(companyId: string, companyData: Partial<InterCompany>): Promise<InterCompany | null> {
+        try {
+            return await this.updateById(companyId,companyData)
+        } catch (error) {
+            throw new Error(String(error))
+        }
+    }
 }
 
 export default new CompanyRepository()

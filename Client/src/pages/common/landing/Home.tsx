@@ -2,10 +2,13 @@ import React from 'react'
 import { FaVideo, FaComments, FaTasks, FaFileAlt, FaUserPlus, FaCalendarAlt, FaPlus } from 'react-icons/fa';
 import homeimg from '../../../assets/Homeimg1.png'
 import './Home.css'
-import Footer from '../../../components/common/footer/footer'
-import Header from '../../../components/common/header/header';
+import Footer from '../../../components/common/footer/Footer'
+import Header from '../../../components/common/header/Header';
+import { FiExternalLink } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate=useNavigate()
   return (
     
       <div className="bg-card p-6 shadow-lg w-full max-w-12/12">
@@ -22,7 +25,11 @@ const Home = () => {
                   <h2 className="text-5xl font-semibold">welcome to virtual office</h2>
                   <p className="text-xl mt-25">
                     if you want to create workspace,<br /> you can purchase our subscription<br/> packages
+                    <a onClick={()=>navigate('/subscription')} className="inline-flex items-center gap-1 pl-2 underline text-blue-500">
+                      click here <FiExternalLink />
+                    </a>
                   </p>
+                  
                 </div>
 
                 {/* Right: Image */}
@@ -74,7 +81,7 @@ const Home = () => {
             {/* Team Members Card */}
             <div className="bg-[#12152e] text-white rounded-xl p-4 w-full md:w-1/2 flex flex-col items-start justify-between h-60">
               <div className="w-full">
-                <h3 className="text-xl font-semibold mb-3">Team Members</h3>
+                <h3 className="text-xl font-semibold mb-3">Add Employee</h3>
                 <div className="flex gap-1 mb-2">
                 <FaUserPlus /> 
                   {/* <img src="https://i.pravatar.cc/30?img=1" alt="user1" className="rounded-full w-8 h-8" />

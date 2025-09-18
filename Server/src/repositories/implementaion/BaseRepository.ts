@@ -16,4 +16,18 @@ export class BaseRepositories <T extends Document > implements InterBaseReposito
             throw new Error(error instanceof Error?error.message:String(error))
         }
     }
+    async findById(id:string):Promise<T|null>{
+        try {
+            return await this.model.findById(id).exec()
+        } catch (error) {
+            throw new Error(error instanceof Error?error.message:String(error))
+        }
+    }
+    async updateById(id: string, data: UpdateQuery<T>, options?: QueryOptions): Promise<T | null> {
+        try {
+            return await this.model.findByIdAndUpdate(id,data,{...options,new:true})
+        } catch (error) {
+            throw new Error(error instanceof Error?error.message:String(error))
+        }
+    }
 }

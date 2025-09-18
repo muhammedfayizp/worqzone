@@ -1,7 +1,7 @@
 import React from 'react';
 import './landing.css';
-import Header from '../../../components/common/header/header';
-import Footer from '../../../components/common/footer/footer';
+import Header from '../../../components/common/header/Header';
+import Footer from '../../../components/common/footer/Footer';
 import img1 from '../../../assets/L1.png';
 import img2 from '../../../assets/L2.png';
 import img3 from '../../../assets/L3.png';

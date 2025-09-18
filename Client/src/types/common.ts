@@ -1,5 +1,4 @@
-export interface ApiResponse<T>{
+export interface ApiResponse{
     success:boolean;
-    data:T;
     message:string;
 }

@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import { FaUserLock } from "react-icons/fa";
 import logimg from '../../../assets/Login.png';
-import type { formError, userSignIn, userSignUp } from '../../../interface/Interface';
+import type { formError, userSignIn } from '../../../interface/Interface';
 import { validateForm } from '../../../validations/authValidation';
 import { companySignIn } from '../../../services/company/companyApi';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../../redux/slice/authSlice';
+import ForgotPasswordModal from '../../../components/company/ForgotPasswordModal'
+
 
 const Login = () => {
+  const navigate=useNavigate()
+  const dispatch=useDispatch()
+  
+  const [isForgotPassword,setIsForgotPassword]=useState(false)
   const [formData, setFormData] = useState<userSignIn>({
     email: '',
     role: '',
@@ -34,13 +44,27 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const { isValidate, errors } = validateForm(formData, 'login');
+    
     if (isValidate) {
       try {
         if (formData.role=='company') {
           const response = await companySignIn(formData)
+          if (response.success) {
+            toast.success(response.message);
+            dispatch(loginSuccess({
+              token: response.accessToken,
+              role: response.role,
+              name: response.data.name,
+              email: response.data.email,
+              phone: response.data.phone,
+            }));
+            navigate('/home');
+          }
         }
-      } catch (error) {
-        
+      } catch (error:any) {
+
+        const errorMessage = error.response?.data?.message || 'somthing went wrong'
+        toast.error(errorMessage)
       }
       
     }else{
@@ -50,6 +74,8 @@ const Login = () => {
   }
 
   return (
+    <main>
+
     <div className="bg-card min-h-screen bg-black flex items-center justify-center px-4">
       <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-6xl p-6">
 
@@ -99,6 +125,7 @@ const Login = () => {
                   <p className="text-red-500 text-sm mt-1">{formError.password}</p>
                 )}
             </div>
+            
             <div className='flex justify-between'>
               <div>
                 <select
@@ -120,7 +147,8 @@ const Login = () => {
                 )}
               </div>
               <div className="text-right mt-1 text-sm text-white/70">
-                <a href="#" className="hover:underline text-blue-400">Forgot password?</a>
+                <a onClick={()=>setIsForgotPassword(true)} className="hover:underline text-blue-400">Forgot password?</a>
+                
               </div>
             </div>
 
@@ -136,7 +164,7 @@ const Login = () => {
 
             <div className="text-center text-sm text-white/70 mt-4">
               Don’t have an account?{" "}
-              <a href="/signup" className="text-blue-400 hover:underline">Create One</a>
+              <a href="/register" className="text-blue-400 hover:underline">Create One</a>
             </div>
 
           </form>
@@ -144,6 +172,11 @@ const Login = () => {
 
       </div>
     </div>
+    <ForgotPasswordModal
+      isOpen={isForgotPassword}
+      onClose={()=>setIsForgotPassword(false)}
+    />
+    </main> 
   );
 };
 
